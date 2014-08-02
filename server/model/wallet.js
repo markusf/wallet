@@ -1,31 +1,29 @@
 Wallet = function() {
-	this.value = 0;
 	this.transactions = [];
 };
 
 Wallet.prototype.setValue = function(value) {
-	if (value > this.value) {
-		this.addTransaction(new Transaction(value - this.value));
-	} else if (value < this.value) {
-		this.addTransaction(new Transaction(value - this.value));
+	var currentValue = this.getValue();
+	
+	if (value > currentValue) {
+		this.addTransaction(new Transaction(value - currentValue));
+	} else if (value < currentValue) {
+		this.addTransaction(new Transaction(value - currentValue));
 	}
-	this.value = value;
 };
 
 Wallet.prototype.getValue = function() {
-	return this.value;
+	return this.sumTransactions();
 };
 
 Wallet.prototype.add = function(amount, date) {
-	this.value = this.value + amount;
 	this.addTransaction(new Transaction(amount, date));
 };
 
 Wallet.prototype.remove = function(amount, date) {
-	if (amount > this.value) {
+	if (amount > this.getValue()) {
 		throw new Error("amount is bigger than wallet value");
 	}
-	this.value = this.value - amount;
 	this.addTransaction(new Transaction(amount * -1, date));
 };
 

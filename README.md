@@ -1,7 +1,7 @@
-h1. Description
+# Description
 angular/node application which manages a virtual wallet!
 
-h1. Why?
+# Why?
 
 * Get into node.js + express and mongoose
 * Explore TDD

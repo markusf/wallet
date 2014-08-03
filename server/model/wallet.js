@@ -35,7 +35,6 @@ Wallet.prototype.addTransaction = function(transaction) {
 	this.transactions.unshift(transaction);
 };
 
-
 Wallet.prototype.sumTransactions = function() {
 	var sum = 0;
 	
@@ -44,6 +43,14 @@ Wallet.prototype.sumTransactions = function() {
 	}
 	
 	return sum;
+};
+
+Wallet.prototype.setId = function(id) {
+	this.id = id;
+};
+
+Wallet.prototype.getId = function() {
+	return this.id;
 };
 
 Transaction = function(value, date) {

@@ -52,6 +52,12 @@ describe("Wallet", function(){
 		assert(wallet.getTransactions() instanceof Array);
 	});
 	
+	it("should be possible to assign an id to make it identifiable", function() {
+		var id = "fooWallet";
+		wallet.setId(id);
+		assert(wallet.getId() === id);
+	});
+	
 	describe("Transaction", function() {
 		it("should be represented by a prototype", function() {
 			assert(new Transaction() instanceof Transaction);

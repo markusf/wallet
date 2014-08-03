@@ -1,5 +1,5 @@
 var assert = require("assert");
-var should = require('should')
+var should = require('should');
 require('../model/wallet.js');
 var walletService = require('../service/walletService.js');
 
@@ -22,6 +22,10 @@ describe("WalletService", function() {
 		wallet = walletService.getWallet(walletId);
 		
 		assert(walletId === wallet.getId());
+	});
+	
+	it("should fail when trying to access a wallet, which is unknown", function() {
+		assert.throws(function(){walletService.getWallet("13371337");}, Error);
 	});
 	
 	it("should be able to add money to a specific wallet", function() {

@@ -29,6 +29,8 @@ var service = {
 		
 		if (!id) {
 			id = createAndStoreWallet();
+		} else {
+			breakIfWalletDoesNotExist(id);
 		}
 		
 		return walletRepository[id];

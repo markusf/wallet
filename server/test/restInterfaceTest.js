@@ -104,9 +104,28 @@ describe("Index Route", function() {
 						.get("/service/wallet/transactions/" + wallet.id + "/1/10") // page 1, max 10 entries
 						.expect(200)
 						.then(function(res) {
-							assert(res.body.length === 2);
+							assert(res.body.length == 2);
 							done();
 						});
+				}).catch(function(err){
+					done(err);
+				});
+		});
+		
+		it("should be able to access value of a specific wallet", function(done) {
+			request(app)
+				.get("/service/wallet/add/" + wallet.id + "/200")
+				.expect(200)
+				.then(function() {
+					return request(app)
+						.get("/service/wallet/value/" + wallet.id)
+						.expect(200)
+						.then(function(res) {
+							assert(res.body === 200);
+							done();
+						});
+				}).catch(function(err){
+					done(err);
 				});
 		});
 		

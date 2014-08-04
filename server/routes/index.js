@@ -72,4 +72,13 @@ router.get('/service/wallet/transactions/:id/:page/:pageSize', function(req, res
 	}
 });
 
+router.get('/service/wallet/value/:id', function(req, res) {
+	try {
+		res.json(walletService.getValue(req.params.id));
+	} catch (e) {
+		console.log(e);
+		res.send(404);
+	}
+});
+
 module.exports = router;

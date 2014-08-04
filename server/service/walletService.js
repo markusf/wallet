@@ -51,6 +51,11 @@ var service = {
 		walletRepository[id].setValue(amount);
 	},
 	
+	getValue: function(id) {
+		breakIfWalletDoesNotExist(id);
+		return walletRepository[id].getValue();
+	},
+	
 	getTransactions: function(id, page, size) {
 		breakIfWalletDoesNotExist(id);
 		var wallet = walletRepository[id];

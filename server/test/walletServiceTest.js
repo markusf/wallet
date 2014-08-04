@@ -84,6 +84,9 @@ describe("WalletService", function() {
 		assert.throws(function(){walletServicegetTransactions(walletId, 3, 5)}, Error);
 	});
 	
-	
+	it("should be able to get the wallets current value", function() {
+		walletService.add(walletId, 50);
+		assert(walletService.getValue(walletId) === 50);
+	});
 	
 });

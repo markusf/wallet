@@ -1,8 +1,9 @@
-var request = require('supertest')
+//var request = require('supertest')
 var express = require('express');
 var app = require('../app.js');
 var assert = require("assert");
 var should = require('should');
+var request = require('supertest-as-promised');
 
 describe("Index Route", function() {
 	
@@ -64,20 +65,17 @@ describe("Index Route", function() {
 		
 		it("should be able to remove money from a specific wallet", function(done) {
 			// First add 200, after remove 200
+			// supertest with promises
 			request(app)
 				.get("/service/wallet/add/" + wallet.id + "/200")
 				.expect(200)
-				.end(function(err, res) {
-					if (err) return done(err);
-					// remove
-					request(app)
-					.get("/service/wallet/remove/" + wallet.id + "/200")
-					.expect(200)
-					.end(function(err, res) {
-						if (err) return done(err);
-						done();
+				.then(function() {
+							return 	request(app)
+							.get("/service/wallet/remove/" + wallet.id + "/200")
+							.expect(200);
+				}).then(function() {
+					done();
 				});
-			});
 			
 		});
 		
@@ -96,27 +94,24 @@ describe("Index Route", function() {
 			request(app)
 				.get("/service/wallet/add/" + wallet.id + "/200")
 				.expect(200)
-				.end(function(err, res) {
-					if (err) return done(err);
-					// remove
-					request(app)
+				.then(function() {
+					return request(app)
 						.get("/service/wallet/remove/" + wallet.id + "/200")
-						.expect(200)
-						.end(function(err, res) {
-							if (err) return done(err);
-							request(app)
-								.get("/service/wallet/transactions/" + wallet.id + "/1/10") // page 1, max 10 entries
-								.expect(200)
-								.end(function(err, res) {
-									if (err) return done(err);
-									assert(res.body.length === 2);
-									done();
-								});
-						});
+						.expect(200);
+				})
+				.then(function() {
+					return request(app)
+					.get("/service/wallet/transactions/" + wallet.id + "/1/10") // page 1, max 10 entries
+					.expect(200);
+				})
+				.then(function() {
+					done();
 				});
 		});
 		
+		
 	});
+	
 });
 
 

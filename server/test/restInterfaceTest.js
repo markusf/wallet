@@ -101,14 +101,14 @@ describe("Index Route", function() {
 				})
 				.then(function() {
 					return request(app)
-					.get("/service/wallet/transactions/" + wallet.id + "/1/10") // page 1, max 10 entries
-					.expect(200);
-				})
-				.then(function() {
-					done();
+						.get("/service/wallet/transactions/" + wallet.id + "/1/10") // page 1, max 10 entries
+						.expect(200)
+						.then(function(res) {
+							assert(res.body.length === 2);
+							done();
+						});
 				});
 		});
-		
 		
 	});
 	

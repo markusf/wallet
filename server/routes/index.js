@@ -7,7 +7,7 @@ router.get('/:id?', function(req, res) {
 		// create wallet and send redirect
 		console.log("create and redirect");
 		var wallet = walletService.getWallet();
-		res.redirect("/" + wallet.getId());
+		res.redirect("/" + wallet.id);
 	} else {
 		try {
 			console.log("send app.html");

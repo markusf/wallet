@@ -1,4 +1,3 @@
-require('../model/wallet.js');
 var uuid = require('node-uuid');
 
 
@@ -6,21 +5,57 @@ var walletRepository = {};
 
 /** private methods **/
 var createAndStoreWallet = function() {
-	var wallet = new Wallet();
+	var wallet = {};
 	
 	var id = uuid.v1();
-	wallet.setId(id);
+	wallet.id = id;
+	wallet.transactions = [];
 	
 	walletRepository[id] = wallet;
 	
 	return id;
 };
 
-var breakIfWalletDoesNotExist = function(id) {
-	if (!walletRepository[id]) {
+var setValue = function(wallet, value) {
+	var currentValue = getValue(wallet);
+	
+	if (value > currentValue || value < currentValue) {
+		addTransaction(wallet, createTransaction(value - currentValue));
+	}
+};
+
+var createTransaction = function(value, date) {
+	var date = date || new Date().getTime();
+	
+	return {value: value, date: date};
+};
+
+var addTransaction = function(wallet, transaction) {
+	wallet.transactions.unshift(transaction);
+};
+
+var sumTransactions = function(wallet) {
+	var sum = 0;
+	
+	for (var i = 0; i < wallet.transactions.length; i++) {
+		sum = sum + wallet.transactions[i].value;
+	}
+	
+	return sum;
+};
+
+var getValue = function(wallet) {
+	return sumTransactions(wallet);
+};
+
+var getWalletOrBreak = function(id) {
+	var wallet = walletRepository[id];
+	if (!wallet) {
 		throw new Error("wallet does not exist");
 	}
-}
+	
+	return wallet;
+};
 
 var service = {
 	
@@ -29,37 +64,37 @@ var service = {
 		
 		if (!id) {
 			id = createAndStoreWallet();
-		} else {
-			breakIfWalletDoesNotExist(id);
 		}
 		
-		return walletRepository[id];
+		return getWalletOrBreak(id);
 	},
 	
-	add: function(id, amount) {
-		breakIfWalletDoesNotExist(id);
-		walletRepository[id].add(amount);
+	add: function(id, amount, date) {
+		var wallet = getWalletOrBreak(id);
+		addTransaction(wallet, createTransaction(amount, date));
 	},
 	
-	remove: function(id, amount) {
-		breakIfWalletDoesNotExist(id);
-		walletRepository[id].remove(amount);
+	remove: function(id, amount, date) {
+		var wallet = getWalletOrBreak(id);
+		if (amount > getValue(wallet)) {
+			throw new Error("amount is bigger than wallet value");
+		}
+		addTransaction(wallet, createTransaction(amount * - 1, date));
 	},
 	
 	setValue: function(id, amount) {
-		breakIfWalletDoesNotExist(id);
-		walletRepository[id].setValue(amount);
+		var wallet = getWalletOrBreak(id);
+		setValue(wallet, amount);
 	},
 	
 	getValue: function(id) {
-		breakIfWalletDoesNotExist(id);
-		return walletRepository[id].getValue();
+		var wallet = getWalletOrBreak(id);
+		return getValue(wallet);
 	},
 	
 	getTransactions: function(id, page, size) {
-		breakIfWalletDoesNotExist(id);
-		var wallet = walletRepository[id];
-		var transactions = wallet.getTransactions();
+		var wallet = getWalletOrBreak(id);
+		var transactions = wallet.transactions;
 		
 		// check if page exists
 		var pageStart = page * size - size;
@@ -72,7 +107,5 @@ var service = {
 	}
 
 };
-
-
 
 module.exports = service;

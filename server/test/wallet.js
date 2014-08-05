@@ -1,5 +1,6 @@
 var assert = require("assert");
 var should = require('should');
+var fs = require('fs');
 require("../model/wallet.js");
 
 /**
@@ -142,6 +143,68 @@ describe("Wallet", function(){
 			assert(wallet.getValue() === wallet.sumTransactions());
 			
 			// shit, this works, I now can remove :)
+		});
+		
+	});
+	
+	describe("WalletFs", function() {
+		
+		var fileName = "message.txt";
+		
+		it("should be able to write and read from file", function(done) {
+			var content = "Hello!";
+			
+			fs.writeFile(fileName, content, function(err) {
+				if (err) done(err);
+				fs.readFile(fileName, function(err, data) {
+					if (err) done(err);
+					assert(data == content);
+					done();
+				});
+			});
+
+		});
+		
+		it("should be to write a wallet to fileystem", function() {
+			assert(wallet);
+			
+			wallet.setValue(500);
+			wallet.setValue(400);
+			
+			var jsonString = JSON.stringify(wallet);
+			
+			fs.writeFileSync(fileName, jsonString);
+		});
+		
+		it("should be able to read a wallet from filesystem", function() {
+			
+			wallet.setValue(500);
+			wallet.setValue(400);
+			//console.log(wallet);
+			
+			var jsonString = JSON.stringify(wallet);
+			
+			fs.writeFileSync(fileName, jsonString);
+			
+			var fileContent = fs.readFileSync(fileName, {encoding: 'UTF-8'});
+			
+			assert(jsonString == fileContent);
+			
+			var walletFromFile = JSON.parse(fileContent);
+			
+			//console.log(walletFromFile);
+			
+			assert(walletFromFile.transactions.length == 2);
+			// of course not ;) assert(walletFromFile.transactions[0] instanceof Date);
+		});
+		
+		afterEach(function() {
+			try {
+				fs.unlinkSync(fileName);
+			} catch (e) {
+				// ignore
+			}
+			assert(fs.existsSync(fileName) == false);
 		});
 		
 	});

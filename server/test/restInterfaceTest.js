@@ -129,6 +129,33 @@ describe("Index Route", function() {
 				});
 		});
 		
+		it("should be possible to provide an optional date parameter for adding and removing money", function(done) {
+			var date = new Date().getTime();
+			
+			request(app)
+				.get("/service/wallet/add/" + wallet.id + "/200/" + date)
+				.expect(200)
+				.then(function() {
+					return request(app)
+						.get("/service/wallet/remove/" + wallet.id + "/200/" + date)
+						.expect(200);
+				})
+				.then(function() {
+					return request(app)
+						.get("/service/wallet/transactions/" + wallet.id + "/1/10") // page 1, max 10 entries
+						.expect(200)
+						.then(function(res) {
+							var transactions = res.body;
+							assert(transactions.length == 2);
+							assert(transactions[0].date === date);
+							assert(transactions[1].date === date);
+							done();
+						});
+				}).catch(function(err){
+					done(err);
+				});
+		});
+		
 	});
 	
 });

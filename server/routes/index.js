@@ -32,9 +32,10 @@ router.get('/service/wallet/:id?', function(req, res) {
 	}
 });
 
-router.get('/service/wallet/add/:id/:amount', function(req, res) {
+router.get('/service/wallet/add/:id/:amount/:date?', function(req, res) {
 	try {
-		walletService.add(req.params.id, Number(req.params.amount));
+		console.log("Date: " + req.params.date);
+		walletService.add(req.params.id, Number(req.params.amount), Number(req.params.date));
 		res.send(200);
 	} catch (e) {
 		console.log(e);
@@ -42,9 +43,9 @@ router.get('/service/wallet/add/:id/:amount', function(req, res) {
 	}
 });
 
-router.get('/service/wallet/remove/:id/:amount', function(req, res) {
+router.get('/service/wallet/remove/:id/:amount/:date?', function(req, res) {
 	try {
-		walletService.remove(req.params.id, Number(req.params.amount));
+		walletService.remove(req.params.id, Number(req.params.amount), Number(req.params.date));
 		res.send(200);
 	} catch (e) {
 		console.log(e);

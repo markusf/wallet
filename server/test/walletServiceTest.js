@@ -173,6 +173,27 @@ describe("WalletService", function() {
 		assert(wallet.transactions.length === 1);
 	});
 	
+	it("should be possible to get a wallet repository", function() {
+		var walletRepository = walletService.getWalletRepository();
+		assert(walletRepository);
+	});
+	
+	it("should be possible to set a new wallet repository", function() {
+		var newWallet = walletService.getWallet();
+		
+		var newWalletRepository = {};
+		
+		newWalletRepository[newWallet.id] = newWallet;
+		
+		walletService.setWalletRepository(newWalletRepository);
+		
+		var walletRepository = walletService.getWalletRepository();
+		
+		assert(walletRepository);
+		
+		assert(walletRepository === newWalletRepository);
+	});
+	
 	/*
 	describe("WalletFs", function() {
 		

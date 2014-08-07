@@ -104,6 +104,14 @@ var service = {
 			throw new Error("page does not exist");
 		}
 		return transactions.slice(pageStart, Math.min(pageStart + size, transactions.length));
+	},
+	
+	getWalletRepository: function() {
+		return walletRepository;
+	},
+	
+	setWalletRepository: function(repository) {
+		walletRepository = repository;
 	}
 
 };
